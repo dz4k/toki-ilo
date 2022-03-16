@@ -1,0 +1,9 @@
+{
+    "module": "./index.mjs",
+    "engines": {
+        "node": "^17"
+    },
+    "dependencies": {
+        "@types/node": "^17.0.21"
+    }
+}
