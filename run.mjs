@@ -30,9 +30,14 @@ const run = async ast => {
 const runNode = async (node, ctx) => {
     switch (node.t) {
     
-
     // Statements
 
+    case "block statement": {
+        for (const stmt of node.children) {
+            await runNode(stmt, ctx)
+        }
+        break
+    }
 
     case "assignment statement": {
         const [lhs, rhs] = node.children
@@ -77,6 +82,12 @@ const runNode = async (node, ctx) => {
                     ctx["nanpa ni"] = i++
                     await runNode(rhs, ctx)
                 }
+            } else if (typeof value === "number") {
+                for (let i = 0; i < value; i++) {
+                    ctx.ni = ctx["nanpa ni"] = i
+                    ctx["ni ale"] = value
+                    await runNode(rhs, ctx)
+                }
             } else {
                 if (value) {
                     ctx.ni = value
@@ -87,9 +98,7 @@ const runNode = async (node, ctx) => {
         break
     }
 
-
     // Expressions
-
 
     case "prepositional": {
         return runNode(node.children[0], ctx)

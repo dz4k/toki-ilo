@@ -11,6 +11,8 @@
  * @property {String} [data]
  */
 
+import { BlockList } from "net"
+
 /**
  * 
  * @param {Token[]} tokens 
@@ -66,7 +68,7 @@ const parse = tokens => {
     const parseRule = (fn, ...args) => {
         const startToken = next.value
         const node = fn(...args)
-        const endToken = last
+        const endToken = current
         if (!node) return null
         return { ...node, startToken, endToken }
     }
@@ -80,12 +82,16 @@ const parse = tokens => {
         /** @type {ASTNode[]} */
         const rv = []
         let stmt
-        while (stmt = parseRule(statement)) rv.push(stmt)
+        while (!next.done && !matchType("dot")) rv.push(parseRule(statement))
         return rv
     }
 
     const statement = () => {
-        const nud = statementNud()
+        if (matchType("colon")) return block()
+
+        const nud = simpleStatement()
+
+        if (!nud) return null
 
         if (matchType("dot")) {
             return nud
@@ -93,16 +99,21 @@ const parse = tokens => {
 
         if (matchType("la")) {
             const body = parseRule(statement)
+            if (!body) parseError("la statement has no body")
             matchType("dot")
             return { t: "la statement", children: [nud, body] }
         }
+
+        parseError("Unterminated statement")
     }
 
     /* Null denotation */
-    const statementNud = () => {
+    const simpleStatement = () => {
         if (matchType("o")) return funcall()
         
         const lhs = parseRule(expression)
+
+        if (!lhs) return null
 
         if (matchType("o")) return assignment(lhs)
 
@@ -123,6 +134,11 @@ const parse = tokens => {
         }
     
         return { t: "funcall statement", children: [funcName, ...args] }
+    }
+
+    const block = () => {
+        const children = statements()
+        return { t: "block statement", children }
     }
 
     const assignment = lhs => {

@@ -109,7 +109,7 @@ const lex = src => {
 				break
 			}
 			if (ch === "\\") {
-				console.log("ch is", eat())
+				eat()
 			}
 			str += ch
 		}
