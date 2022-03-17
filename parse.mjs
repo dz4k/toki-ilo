@@ -11,7 +11,7 @@
  * @property {String} [data]
  */
 
-import { BlockList } from "net"
+import { indent } from "./util.mjs"
 
 /**
  * 
@@ -58,7 +58,7 @@ const parse = tokens => {
      * @returns {Token | null}
      */
     const matchIdent = v => (!next.done && next.value.t === "identifier" && next.value.v == v) ? eat() : null
-
+ 
     /**
      * @template {Array} T
      * @param {(...args: T) => Pick<ASTNode, ("t"|"data"|"children")>} fn 
@@ -82,7 +82,14 @@ const parse = tokens => {
         /** @type {ASTNode[]} */
         const rv = []
         let stmt
-        while (!next.done && !matchType("dot")) rv.push(parseRule(statement))
+        while (!next.done && !matchType("dot")) {
+            const stmt = parseRule(statement)
+            if (!stmt) {
+                parseError("Expected statement")
+                return rv
+            }
+            rv.push(stmt)
+        }
         return rv
     }
 
@@ -93,18 +100,16 @@ const parse = tokens => {
 
         if (!nud) return null
 
-        if (matchType("dot")) {
-            return nud
-        }
 
         if (matchType("la")) {
             const body = parseRule(statement)
             if (!body) parseError("la statement has no body")
-            matchType("dot")
             return { t: "la statement", children: [nud, body] }
         }
 
-        parseError("Unterminated statement")
+        if (!matchType("dot")) parseError("Unterminated statement")
+
+        return nud
     }
 
     /* Null denotation */
@@ -117,6 +122,8 @@ const parse = tokens => {
 
         if (matchType("o")) return assignment(lhs)
 
+        if (matchType("li")) return assertion(lhs)
+
         return { t: "expression statement", children: [lhs] }
     }
     
@@ -126,11 +133,11 @@ const parse = tokens => {
         if (!funcName) parseError("Expected function name.")
     
         while (matchType("e")) {
-            args.push(parseRule(expression))
+            args.push(parseRule(expression) || parseError("Expected argument"))
         }
     
         while (matchType("comma")) {
-            args.push(parseRule(prepositional))
+            args.push(parseRule(prepositional) || parseError("Expected preposition argument"))
         }
     
         return { t: "funcall statement", children: [funcName, ...args] }
@@ -143,11 +150,29 @@ const parse = tokens => {
 
     const assignment = lhs => {
         const rhs = parseRule(expression)
+        if (!rhs) {
+            parseError("Expected value to assign")
+            return null
+        }
         return { t: "assignment statement", children: [lhs, rhs] }
     }
 
+    const assertion = lhs => {
+        const rhs = parseRule(expression)
+
+        if (!rhs) {
+            parseError("Expected right-hand side")
+            return lhs
+        }
+
+        return { t: "equality statement", children: [lhs, rhs] }
+    }
+
     const expression = () => {
-        return parseRule(name)
+        const nud = parseRule(name)
+        if (!nud) return null
+        const led = parseRule(stringLiteral, nud) || parseRule(numberLiteral, nud) || nud
+        return led
     }
 
     const prepositional = () => {
@@ -158,6 +183,11 @@ const parse = tokens => {
             || matchIdent("sama")
             || matchIdent("tan")
         )
+
+        if (!preposition) {
+            parseError("Expected preposition")
+            return null
+        }
 
         const expr = parseRule(expression)
 
@@ -171,6 +201,22 @@ const parse = tokens => {
         }
         if (rv.length === 0) return null
         return { t: "name expression", data: rv.map(e => e.v).join(" ") }
+    }
+
+    const stringLiteral = lhs => {
+        if (lhs.t !== "name expression") return null
+        const lit = matchType("string literal")
+        if (!lit) return null
+
+        return { t: "string expression", data: lit.v, children: [lhs] }
+    }
+
+    const numberLiteral = lhs => {
+        if (lhs.t !== "name expression") return null
+        const lit = matchType("number literal")
+        if (!lit) return null
+
+        return { t: "number expression", data: lit.v, children: [lhs] }
     }
 
     return { errors, ast: statements() }

@@ -1,4 +1,5 @@
 
+import * as util from "node:util"
 import { pad } from "./util.mjs"
 import lex from "./lex.mjs"
 import parse from "./parse.mjs"
@@ -15,8 +16,8 @@ const toki_ilo = src => {
 
     const { ast, errors: parseErrors } = parse(tokens)
     if (parseErrors.length > 0) {
-        for (const error of lexErrors) console.log(
-            `ERR sLn ${pad(error.row, 4)} Col ${pad(error.col, 4)}: ${error.msg}`
+        for (const error of parseErrors) console.log(
+            `ERR Ln ${pad(error.row, 4)} Col ${pad(error.col, 4)}: ${error.msg}`
         )
         return
     }

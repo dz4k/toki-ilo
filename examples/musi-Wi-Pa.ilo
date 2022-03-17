@@ -1,16 +1,23 @@
 
-poki o poki sin.
-nanpa 1000 la:
-    nanpa o nanpa ni.
+poki o kulupu sin.
+nanpa 100 la:
+    o pana e wan, tawa nanpa ni.
+    nanpa o ni.
     toki o nimi "".
     
-    o kipisi 3 e nanpa.
-    awen ni li 0 la o pana e nimi "Wi", tawa toki.
-    o kipisi 5 e nanpa.
-    awen ni li 0 la o pana e nimi "Pa", tawa toki.
+    o kipisi e nanpa, tawa nanpa 3.
+    awen ni li ala la:
+        o pana e nimi "Wi", tawa toki.
+        toki o ni.
+    .
+    o kipisi e nanpa, tawa nanpa 5.
+    awen ni li ala la:
+        o pana e nimi "Pa", tawa toki.
+        toki o ni.
+    .
     
-    toki li ala la toki o nanpa.
+    toki li nimi "" la toki o nanpa.
     
     o pana e toki, tawa poki.
 .
-o pana e poki.
+poki la o toki e ni.

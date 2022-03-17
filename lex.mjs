@@ -18,8 +18,8 @@
  *      | "colon"
  *      | "comma"
  *      | "identifier"
- *      | "stringLiteral"
- *      | "numberLiteral"
+ *      | "string literal"
+ *      | "number literal"
  * )} TokenType
  * @extends {String}
  */
@@ -98,7 +98,7 @@ const lex = src => {
 		while (match(isDigit)) {
 			num += ch
 		}
-		emit("numberLiteral", num)
+		emit("number literal", num)
 	}
 
 	const stringLiteral = start => {
@@ -113,7 +113,7 @@ const lex = src => {
 			}
 			str += ch
 		}
-		emit("stringLiteral", str)
+		emit("string literal", str)
 	}
 
 	while (eat()) {

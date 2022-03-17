@@ -53,12 +53,22 @@ const runNode = async (node, ctx) => {
         break
     }
 
+    case "equality statement": {
+        const [lhs, rhs] = await Promise.all(
+            node.children.map(child => runNode(child, ctx))
+        )
+        ctx.ni = lhs == rhs
+        break
+    }
+
     case "funcall statement": {
         const [nameNode, ...args] = node.children
         const funcName = mangleFunctionName(nameNode.data, args)
-        ctx.ni = ctx[functionContext][funcName](
-            ...await Promise.all(args.map(arg => runNode(arg, ctx)))
+        const rv = ctx[functionContext][funcName](
+            ...await Promise.all(args.map(arg => runNode(arg, ctx))),
+            ctx
         )
+        if (rv !== undefined) ctx.ni = rv
         break
     }
     
@@ -90,7 +100,6 @@ const runNode = async (node, ctx) => {
                 }
             } else {
                 if (value) {
-                    ctx.ni = value
                     await runNode(rhs, ctx)
                 }
             }
@@ -106,6 +115,16 @@ const runNode = async (node, ctx) => {
 
     case "name expression": {
         return ctx[node.data]
+    }
+
+    case "string expression": {
+        if (node.children[0].data !== "nimi") err("Unknown textual type " + node.children[0].data)
+        return node.data
+    }
+
+    case "number expression": {
+        if (node.children[0].data !== "nanpa") err("Unknown numeric type " + node.children[0].data)
+        return Number(node.data)
     }
 
     default: err("Unknown node type " + node.t + ". This is a bug in toki ilo.")

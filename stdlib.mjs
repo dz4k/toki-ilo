@@ -16,11 +16,16 @@ export const functions = {
             return dest + a
         }
     },
-    
+
+    "kipisi,,tawa"(num, denom, ctx) {
+        ctx["awen ni"] = num % denom
+        return num / denom
+    }
 }
 
 export const makeContext = () => ({
     [functionContext]: Object.create(functions),
+    "ala": 0,
     "wan": 1,
     "tu": 2,
     get "kulupu sin"() {
