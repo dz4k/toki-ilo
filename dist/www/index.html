@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="tok">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <title>toki ilo</title>
+
+    <script type="module">
+        import toki_ilo from "./toki-ilo.js"
+        window.toki_ilo = src => toki_ilo(src, {
+            "toki,": msg => {
+                document.getElementById("output").textContent += msg + "\n"
+                console.log("%c toki:", "color: purple", msg)
+            }
+        })
+    </script>
+    <script src="https://unpkg.com/hyperscript.org"></script>
+    <link rel="stylesheet" href="https://the.missing.style">
+    <style>
+        /* until missing.css styles textareas */
+        textarea {
+            display: block;
+
+            padding: calc(var(--rhythm) / 4) calc(var(--rhythm) / 2);
+            margin: calc(var(--rhythm) / 4) 0;
+            margin-block-start:  calc(var(--rhythm) / 2);
+            width: 100%;
+
+            font-size: 1rem;
+            line-height: 1;
+            font-family: var(--main-font);
+
+            background: var(--bg);
+            border: 1px solid var(--faded-fg);
+            border-radius: .2em;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>toki ilo</h1>
+
+        <section>
+            <h2>o pali e ilo</h2>
+            <textarea style="font-family: var(--mono-font);" name="src" id="src" cols="80" rows="20"
+                >o toki e nimi "toki, ma o!".
+            </textarea>
+            <section role="toolbar" aria-orientation="horizontal" 
+                _="
+                    on keydown[key is 'LeftArrow']
+                        focus() the previous <[tabindex] /> in me from document.activeElement
+                    end
+                    on keydown[key is 'RightArrow']
+                        focus() the next     <[tabindex] /> in me from document.activeElement
+                    end
+                ">
+                <button tabindex="0" _="
+                    on click
+                        put `` into #output
+                        call toki_ilo(#src's value)
+                    end">ilo o pali</button>
+            </section>
+        </section>
+        
+        <section>
+            <h2>ilo li pana e ni</h2>
+            <pre id="output"></pre>
+        </section>
+    </main>
+</body>
+</html>

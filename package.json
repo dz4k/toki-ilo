@@ -1,5 +1,15 @@
 {
-    "module": "./index.mjs",
+    "name": "toki-ilo",
+    "description": "a toki pona programming language",
+    "files": ["dist"],
+    "type": "module",
+    "module": "./dist/lib/toki-ilo.js",
+    "bin": {
+        "toki-ilo": "./dist/bin/index.js"
+    },
+    "scripts": {
+        "build": "./build/build.sh"
+    },
     "engines": {
         "node": "^17"
     },
