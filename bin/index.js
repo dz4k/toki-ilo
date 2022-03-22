@@ -1,5 +1,5 @@
 
-import toki_ilo from "../lib/toki-ilo.mjs";
-import fs from "node:fs/promises"
+import toki_ilo from "../lib/toki-ilo.js";
+import fs from "node:fs"
 
-await toki_ilo(await fs.readFile(0, "utf-8"))
+await toki_ilo(fs.readFileSync(0, "utf-8"))

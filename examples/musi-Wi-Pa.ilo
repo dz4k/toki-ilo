@@ -1,23 +1,27 @@
 
-poki o kulupu sin.
-nanpa 100 la:
-    o pana e wan, tawa nanpa ni.
-    nanpa o ni.
-    toki o nimi "".
-    
-    o kipisi e nanpa, tawa nanpa 3.
-    awen ni li ala la:
-        o pana e nimi "Wi", tawa toki.
-        toki o ni.
+o musi Wi Pa la:
+    poki o kulupu sin.
+    nanpa 100 la:
+        o pana e wan, tawa nanpa ni.
+        nanpa o ni.
+        toki o nimi "".
+        
+        o kipisi e nanpa, tawa nanpa 3.
+        awen ni li ala la:
+            o pana e nimi "Wi", tawa toki.
+            toki o ni.
+        .
+        o kipisi e nanpa, tawa nanpa 5.
+        awen ni li ala la:
+            o pana e nimi "Pa", tawa toki.
+            toki o ni.
+        .
+        
+        toki li nimi "" la toki o nanpa.
+        
+        o pana e toki, tawa poki.
     .
-    o kipisi e nanpa, tawa nanpa 5.
-    awen ni li ala la:
-        o pana e nimi "Pa", tawa toki.
-        toki o ni.
-    .
-    
-    toki li nimi "" la toki o nanpa.
-    
-    o pana e toki, tawa poki.
+    poki la o toki e ni.
 .
-poki la o toki e ni.
+
+o musi Wi Pa.
